@@ -17,7 +17,7 @@ export class AppController {
   getHealth(): object {
     return {
       status: 'ok',
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toLocaleString(),
       service: 'r3-admin-server',
       version: process.env.npm_package_version || '1.0.0',
     }
