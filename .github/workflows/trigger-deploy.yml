@@ -6,6 +6,7 @@ name: Build and Trigger Deployment for r3-admin-server
 on:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build-and-dispatch:
