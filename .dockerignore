@@ -5,6 +5,8 @@ dist
 .vscode
 *.log
 *.md
+!README.md
 .DS_Store
+**/.DS_Store
 .env.local
 .env.*.local
