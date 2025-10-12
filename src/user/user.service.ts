@@ -93,12 +93,12 @@ export class UserService {
         }
       }
 
-      // if (existingUser.isSystemDefault) {
-      //   return {
-      //     error: true,
-      //     message: '系统内置资源不能修改',
-      //   }
-      // }
+      if (existingUser.isSystemDefault) {
+        return {
+          error: true,
+          message: '系统内置资源不能修改',
+        }
+      }
       // 2. 如果提供了新用户名，检查是否与其他用户冲突
       if (username && username !== existingUser.username) {
         const userWithSameName = await this.userRepository.findOne({
