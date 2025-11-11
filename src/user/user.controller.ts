@@ -3,8 +3,7 @@ import { ApiOperation, ApiParam, ApiBody, ApiOkResponse, ApiTags } from '@nestjs
 import { UserService } from './user.service' // 导入用户服务
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { FindListDto } from './dto/find-list.dto'
-import { Public } from '@/auth/decorators/public.decorator'
+import { UserFindListDto } from './dto/find-list.dto'
 import { User } from './user.entity'
 import { Request } from 'express'
 import { JwtPayload } from '@/auth/auth.interface'
@@ -30,7 +29,6 @@ export class UserController {
    * 新增用户
    * - 路由：POST /user
    */
-  @Public()
   @ApiOperation({ summary: '新增' })
   @ApiBody({ type: CreateUserDto })
   @Post('')
@@ -41,7 +39,6 @@ export class UserController {
    * 更新用户
    * - PUT /user
    */
-  @Public()
   @ApiOperation({ summary: '更新' })
   @ApiBody({ type: UpdateUserDto })
   @Put('')
@@ -52,13 +49,16 @@ export class UserController {
    * 分页查询
    * - 路由：GET /user
    */
-  @Public()
   @ApiOperation({ summary: '分页查询' })
-  @ApiBody({ type: FindListDto })
+  @ApiBody({ type: UserFindListDto })
   @ApiOkResponse({ description: '响应结果', type: FindListVo })
   // @ApiBearerAuth() // swagger文档设置
   @Post('/pagedList')
-  getPagedRows(@Body() dto: FindListDto) {
+  /**
+   * 分页查询用户列表
+   * - 接收 UserFindListDto 作为查询参数
+   */
+  getPagedRows(@Body() dto: UserFindListDto) {
     return this.userService.findList(dto)
   }
   /**

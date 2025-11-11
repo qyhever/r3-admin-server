@@ -1,7 +1,11 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
 import { IsArray, IsEnum, IsOptional, IsString, ArrayMaxSize } from 'class-validator'
 
-export class FindListDto {
+/**
+ * 资源模块分页查询参数
+ * - 用于资源列表的分页、排序与筛选
+ */
+export class ResourceFindListDto {
   @ApiPropertyOptional({ description: '当前页，默认 1' })
   currentPage?: number
 

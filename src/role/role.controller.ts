@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger'
 import { RoleService } from './role.service'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
-import { FindListDto } from './dto/find-list.dto'
+import { RoleFindListDto } from './dto/find-list.dto'
 
 @ApiTags('角色')
 @Controller('role')
@@ -34,9 +34,13 @@ export class RoleController {
    * - 路由：POST /role
    */
   @ApiOperation({ summary: '分页查询' })
-  @ApiBody({ type: FindListDto })
+  @ApiBody({ type: RoleFindListDto })
   @Post('/pagedList')
-  getPagedRows(@Body() dto: FindListDto) {
+  /**
+   * 分页查询角色列表
+   * - 接收 RoleFindListDto 作为查询参数
+   */
+  getPagedRows(@Body() dto: RoleFindListDto) {
     return this.roleService.findList(dto)
   }
   /**

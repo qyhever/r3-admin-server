@@ -6,7 +6,7 @@ import { User } from './user.entity' // 导入用户实体
 import { Role } from '@/role/role.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { FindListDto } from './dto/find-list.dto'
+import { UserFindListDto } from './dto/find-list.dto'
 import { UserRole } from '../common/user-role.entity'
 import { Util } from '@/utils'
 
@@ -172,7 +172,11 @@ export class UserService {
   /**
    * 分页查询
    */
-  async findList(dto: FindListDto) {
+  /**
+   * 分页查询用户
+   * - 使用 UserFindListDto 作为查询参数类型
+   */
+  async findList(dto: UserFindListDto) {
     const { currentPage = 1, pageSize = 10, username, mobile, rangeDate } = dto
     const skip = (currentPage - 1) * pageSize
 

@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiParam } from '@nestjs/swag
 import { ResourceService } from './resource.service'
 import { CreateResourceDto } from './dto/create-resource.dto'
 import { UpdateResourceDto } from './dto/update-resource.dto'
-import { FindListDto } from './dto/find-list.dto'
+import { ResourceFindListDto } from './dto/find-list.dto'
 import { FindAllDto } from './dto/find-all.dto'
 import { BatchUpdateRowsByIdsDto } from './dto/batch-update-by-ids.dto'
 
@@ -46,9 +46,13 @@ export class ResourceController {
    * - 路由：POST/resource
    */
   @ApiOperation({ summary: '分页查询' })
-  @ApiBody({ type: FindListDto })
+  @ApiBody({ type: ResourceFindListDto })
   @Post('/pagedList')
-  getPagedRows(@Body() dto: FindListDto) {
+  /**
+   * 分页查询资源列表
+   * - 接收 ResourceFindListDto 作为查询参数
+   */
+  getPagedRows(@Body() dto: ResourceFindListDto) {
     console.log('dto: ', dto)
     return this.resourceService.findList(dto)
   }

@@ -5,7 +5,7 @@ import { Resource } from '@/resource/resource.entity'
 import { Role } from './role.entity'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
-import { FindListDto } from './dto/find-list.dto'
+import { RoleFindListDto } from './dto/find-list.dto'
 import { RoleResource } from '@/common/role-resource.entity'
 
 @Injectable()
@@ -148,7 +148,11 @@ export class RoleService {
   /**
    * Paginated role list
    */
-  async findList(dto: FindListDto) {
+  /**
+   * 分页查询角色
+   * - 使用 RoleFindListDto 作为查询参数类型
+   */
+  async findList(dto: RoleFindListDto) {
     const { currentPage = 1, pageSize = 10, name, code, rangeDate } = dto
     const skip = (currentPage - 1) * pageSize
 

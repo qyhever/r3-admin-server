@@ -4,7 +4,7 @@ import { Repository, In, Not } from 'typeorm'
 import { Resource } from './resource.entity'
 import { CreateResourceDto } from './dto/create-resource.dto'
 import { UpdateResourceDto } from './dto/update-resource.dto'
-import { FindListDto } from './dto/find-list.dto'
+import { ResourceFindListDto } from './dto/find-list.dto'
 import { FindAllDto } from './dto/find-all.dto'
 
 @Injectable()
@@ -134,7 +134,11 @@ export class ResourceService {
    * 分页查询resource
    * @returns Paginated and sorted resorce list
    */
-  async findList(dto: FindListDto) {
+  /**
+   * 分页查询资源
+   * - 使用 ResourceFindListDto 作为查询参数类型
+   */
+  async findList(dto: ResourceFindListDto) {
     const queryBuilder = this.resourceRepository.createQueryBuilder('resource')
     const { currentPage = 1, pageSize = 10 } = dto
     const skip = (currentPage - 1) * pageSize
