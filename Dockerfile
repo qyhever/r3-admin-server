@@ -29,6 +29,7 @@ RUN pnpm install --prod
 
 # 从构建阶段复制构建产物
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/public ./public
 
 # 暴露9506端口
 EXPOSE 9506
