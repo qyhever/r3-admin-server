@@ -17,30 +17,29 @@ export class HttpExceptionFilter implements ExceptionFilter {
     console.log('[HttpExceptionFilter] catch triggered:', typeTag)
 
     // 打印异常的属性名，for...in 无法枚举 Error/HttpException 的非可枚举属性
-    try {
-      if (exception && (typeof exception === 'object' || typeof exception === 'function')) {
-        const ownProps = Object.getOwnPropertyNames(exception)
-        console.log('[HttpExceptionFilter] ownProps:', ownProps)
-      }
-    } catch (err) {
-      const errMsg = err instanceof Error ? err.message : String(err)
-      console.log('[HttpExceptionFilter] ownProps error:', errMsg)
-    }
+    // try {
+    //   if (exception && (typeof exception === 'object' || typeof exception === 'function')) {
+    //     const ownProps = Object.getOwnPropertyNames(exception)
+    //     console.log('[HttpExceptionFilter] ownProps:', ownProps)
+    //   }
+    // } catch (err) {
+    //   const errMsg = err instanceof Error ? err.message : String(err)
+    //   console.log('[HttpExceptionFilter] ownProps error:', errMsg)
+    // }
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR
     let message = 'Internal Server Error'
     // 将有效信息默认设置为错误堆栈，便于定位问题
     let validMessage = ''
+    let stack = ''
     if (exception instanceof Error) {
-      const name = exception.name || 'Error'
-      const stack = exception.stack || ''
-      validMessage = `${name}: ${exception.message}\n${stack}`
+      stack = exception.stack || ''
     }
 
     if (exception instanceof HttpException) {
       status = exception.getStatus() // 获取异常状态码
       const exceptionResponse = exception.getResponse() // string | object
-      console.log('[HttpExceptionFilter] exceptionResponse type:', typeof exceptionResponse)
+      // console.log('[HttpExceptionFilter] exceptionResponse type:', typeof exceptionResponse)
 
       if (typeof exceptionResponse === 'object' && exceptionResponse && !validMessage) {
         const respObj = exceptionResponse as Record<string, unknown>
@@ -65,6 +64,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       data: {},
       message: validMessage || message,
       success: false,
+      stack,
     }
 
     // 设置返回的状态码， 请求头，发送错误信息

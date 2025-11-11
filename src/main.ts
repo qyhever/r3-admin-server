@@ -28,6 +28,7 @@ async function setupSwagger(app: INestApplication) {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  setupSwagger(app)
   // app.setGlobalPrefix('/api')
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new TransformInterceptor())
@@ -40,7 +41,6 @@ async function bootstrap() {
       },
     }),
   )
-  setupSwagger(app)
   // Add handler for Chrome DevTools workspace folders
   // app.use('/.well-known/appspecific/com.chrome.devtools.json', (_, res) => {
   //   res.json({
