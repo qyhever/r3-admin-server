@@ -22,7 +22,7 @@ export class RoleFindListDto {
   sortField?: string
 
   @ApiPropertyOptional({ description: '排序方式', enum: ['asc', 'desc', ''] })
-  @IsEnum(['asc', 'desc', ''], { message: 'sortValue must be either asc or desc or ""' })
+  @IsEnum(['asc', 'desc', '', undefined], { message: 'sortValue must be either asc or desc or ""' })
   sortValue?: 'asc' | 'desc' | ''
 
   @ApiPropertyOptional({ description: '日期范围', type: [String] })

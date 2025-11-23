@@ -5,7 +5,8 @@ import { JwtModule } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
 import { User } from '@/user/user.entity'
 import { UserModule } from '@/user/user.module'
-import { UserService } from '@/user/user.service'
+import { ResourceModule } from '@/resource/resource.module'
+
 import { Role } from '@/role/role.entity'
 import { UserRole } from '@/common/user-role.entity'
 import { AuthController } from './auth.controller'
@@ -32,9 +33,9 @@ const jwtModule = JwtModule.registerAsync({
 })
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Role, UserRole]), PassportModule, jwtModule, UserModule],
+  imports: [TypeOrmModule.forFeature([User, Role, UserRole]), PassportModule, jwtModule, UserModule, ResourceModule],
   controllers: [AuthController],
-  providers: [AuthService, UserService],
+  providers: [AuthService],
   exports: [jwtModule],
 })
 export class AuthModule {}

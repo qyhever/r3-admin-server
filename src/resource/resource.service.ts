@@ -412,4 +412,19 @@ export class ResourceService {
       deletedCodes: docs.map((doc) => doc.code),
     }
   }
+
+  async toggleStatus(id: number) {
+    const resource = await this.resourceRepository.findOne({
+      where: { id },
+    })
+    if (!resource) {
+      return {
+        error: true,
+        message: 'Resource not found',
+      }
+    }
+    resource.isEnabled = !resource.isEnabled
+    await this.resourceRepository.save(resource)
+    return null
+  }
 }

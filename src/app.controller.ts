@@ -1,3 +1,6 @@
+import * as path from 'path'
+import * as fs from 'fs'
+
 import { Controller, Get } from '@nestjs/common'
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import { AppService } from './app.service'
@@ -25,5 +28,14 @@ export class AppController {
       service: 'r3-admin-server',
       version: process.env.npm_package_version || '1.0.0',
     }
+  }
+
+  @Public()
+  @ApiOperation({ summary: 'meta' })
+  @Get('meta')
+  getMeta(): object {
+    const metaStr = fs.readFileSync(path.resolve(__dirname, '../public/meta.json'), 'utf8')
+    const meta = JSON.parse(metaStr) as { now: string }
+    return meta
   }
 }

@@ -3,12 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm' // 用于注入 TypeORM 仓�
 import { Repository, In } from 'typeorm' // 导入 TypeORM 的 Repository 类
 // import * as dayjs from 'dayjs'
 import { User } from './user.entity' // 导入用户实体
-import { Role } from '@/role/role.entity'
+import { Role } from '@/role/role.entity' // 导入角色实体
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { UserFindListDto } from './dto/find-list.dto'
 import { UserRole } from '../common/user-role.entity'
 import { Util } from '@/utils'
+import { ResourceService } from '@/resource/resource.service'
 
 @Injectable()
 export class UserService {
@@ -16,6 +17,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Role) private roleRepository: Repository<Role>,
     @InjectRepository(UserRole) private userRoleRepository: Repository<UserRole>,
+    private resourceService: ResourceService,
   ) {}
 
   async createDoc(dto: CreateUserDto) {
@@ -300,7 +302,18 @@ export class UserService {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       resourceMap.set(String(resource.id), resource)
     })
-    const uniqueResources = Array.from(resourceMap.values())
+    let uniqueResources = Array.from(resourceMap.values())
+
+    if (validRoles.some((o) => o.code === 'admin')) {
+      const adminResources = await this.resourceService.findAll()
+      uniqueResources = adminResources.map((o) => ({
+        id: o.id,
+        code: o.code,
+        name: o.name,
+        type: o.type,
+        parentCode: o.parentCode,
+      }))
+    }
 
     const doc = {
       ...userBasicInfo,
@@ -387,5 +400,20 @@ export class UserService {
       deletedCount: updatedUsers.length,
       deletedIds: updatedUsers.map((o) => o.id),
     }
+  }
+
+  async toggleStatus(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    })
+    if (!user) {
+      return {
+        error: true,
+        message: 'User not found',
+      }
+    }
+    user.isEnabled = !user.isEnabled
+    await this.userRepository.save(user)
+    return null
   }
 }

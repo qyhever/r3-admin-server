@@ -9,5 +9,6 @@ import { RoleResource } from '../common/role-resource.entity'
   imports: [TypeOrmModule.forFeature([Resource, RoleResource])],
   controllers: [ResourceController],
   providers: [ResourceService],
+  exports: [ResourceService],
 })
 export class ResourceModule {}

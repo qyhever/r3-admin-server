@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body, Req } from '@nestjs/common' // 导入控制器和 HTTP 请求装饰器
+import { Controller, Get, Post, Put, Delete, Param, Body, Req, Patch } from '@nestjs/common' // 导入控制器和 HTTP 请求装饰器
 import { ApiOperation, ApiParam, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { UserService } from './user.service' // 导入用户服务
 import { CreateUserDto } from './dto/create-user.dto'
@@ -102,5 +102,16 @@ export class UserController {
   @Post('/batchDelete')
   deleteRows(@Body() ids: number[]) {
     return this.userService.deleteDocs(ids)
+  }
+
+  /**
+   * 切换状态
+   * - 路由：POST /user/toggleStatus/:id
+   */
+  @ApiOperation({ summary: '切换状态' })
+  @ApiParam({ name: 'id', type: Number, description: 'ID' })
+  @Patch('/toggleStatus/:id')
+  toggleStatus(@Param('id') id: number) {
+    return this.userService.toggleStatus(id)
   }
 }

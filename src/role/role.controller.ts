@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common'
+import { Controller, Get, Post, Put, Delete, Param, Body, Patch } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiParam, ApiBody } from '@nestjs/swagger'
 import { RoleService } from './role.service'
 import { CreateRoleDto } from './dto/create-role.dto'
@@ -81,5 +81,16 @@ export class RoleController {
   @Post('/batchDelete')
   deleteRows(@Body() ids: number[]) {
     return this.roleService.deleteDocs(ids)
+  }
+
+  /**
+   * 切换状态
+   * - 路由：POST /role/toggleStatus/:id
+   */
+  @ApiOperation({ summary: '切换状态' })
+  @ApiParam({ name: 'id', type: Number, description: 'ID' })
+  @Patch('/toggleStatus/:id')
+  toggleStatus(@Param('id') id: number) {
+    return this.roleService.toggleStatus(id)
   }
 }

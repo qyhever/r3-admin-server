@@ -365,4 +365,19 @@ export class RoleService {
       deletedIds: updatedRoles.map((role) => role.id),
     }
   }
+
+  async toggleStatus(id: number) {
+    const role = await this.roleRepository.findOne({
+      where: { id },
+    })
+    if (!role) {
+      return {
+        error: true,
+        message: 'Role not found',
+      }
+    }
+    role.isEnabled = !role.isEnabled
+    await this.roleRepository.save(role)
+    return null
+  }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Query, Param, Body } from '@nestjs/common'
+import { Controller, Get, Post, Put, Delete, Patch, Query, Param, Body } from '@nestjs/common'
 import { ApiTags, ApiOperation, ApiBody, ApiQuery, ApiParam } from '@nestjs/swagger'
 import { ResourceService } from './resource.service'
 import { CreateResourceDto } from './dto/create-resource.dto'
@@ -103,5 +103,16 @@ export class ResourceController {
   @Post('/batchUpdateByIds')
   batchUpdateRowsByIds(@Body() dto: BatchUpdateRowsByIdsDto) {
     return this.resourceService.batchUpdateByIds(dto.row, dto.ids)
+  }
+
+  /**
+   * 切换状态
+   * - 路由：POST /resource/toggleStatus/:id
+   */
+  @ApiOperation({ summary: '切换状态' })
+  @ApiParam({ name: 'id', type: Number, description: 'ID' })
+  @Patch('/toggleStatus/:id')
+  toggleStatus(@Param('id') id: number) {
+    return this.resourceService.toggleStatus(id)
   }
 }
