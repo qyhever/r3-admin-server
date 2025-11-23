@@ -4,6 +4,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# 保证时区一致
+ENV TZ=Asia/Shanghai
+
 COPY package.json pnpm-lock.yaml ./
 
 RUN npm install -g pnpm
