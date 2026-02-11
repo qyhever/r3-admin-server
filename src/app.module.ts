@@ -43,7 +43,9 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`
         DB_PASSWORD: Joi.string().required(),
         DB_SYNC: Joi.boolean().default(false),
         JWT_SECRET: Joi.string().required(),
-        JWT_EXPIRE: Joi.string().default('4h'),
+        JWT_ACCESS_EXPIRE: Joi.string().default('2h'),
+        JWT_REFRESH_EXPIRE: Joi.string().default('72h'),
+        JWT_ISSUER: Joi.string().default('r3-admin'),
       }),
       // load: [Configuration], // 可选：加载自定义配置文件
     }),

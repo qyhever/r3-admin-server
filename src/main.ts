@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common'
 import { AppModule } from './app.module'
 import { HttpExceptionFilter } from './core/filter/http-exception.filter'
 import { TransformInterceptor } from './core/interceptor/transform.interceptor'
+import { ResponseInterceptor } from './core/interceptor/response.interceptor'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import type { INestApplication } from '@nestjs/common'
 import { knife4jSetup } from './knife4j'
@@ -32,6 +33,7 @@ async function bootstrap() {
   // app.setGlobalPrefix('/api')
   app.useGlobalFilters(new HttpExceptionFilter())
   app.useGlobalInterceptors(new TransformInterceptor())
+  app.useGlobalInterceptors(new ResponseInterceptor())
   // 添加全局验证管道，并启用转换
   app.useGlobalPipes(
     new ValidationPipe({

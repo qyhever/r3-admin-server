@@ -35,6 +35,7 @@ export class JwtAuthGuard implements CanActivate {
     }
     const request = context.switchToHttp().getRequest<RequestWithUser>() // 获取请求对象
     const token = this.extractTokenFromHeader(request) // 从请求头中提取token
+    console.log('token: ', token)
     if (!token) {
       throw new HttpException('请先登录后再操作', HttpStatus.UNAUTHORIZED)
     }

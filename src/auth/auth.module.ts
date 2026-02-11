@@ -27,7 +27,7 @@ const jwtModule = JwtModule.registerAsync({
     }
     return {
       secret: configService.get(ConfigEnum.JWT_SECRET),
-      signOptions: { expiresIn: configService.get(ConfigEnum.JWT_EXPIRE) },
+      signOptions: { expiresIn: configService.get(ConfigEnum.JWT_ACCESS_EXPIRE) },
     }
   },
 })
