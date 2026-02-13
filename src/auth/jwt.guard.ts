@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import { Reflector } from '@nestjs/core'
 import { JwtPayload } from './auth.interface'
 import { ConfigEnum } from '@/enum/config.const'
+import { ResponseMessageEnum } from '@/enum/response-message.enum'
 
 interface RequestWithUser extends Request {
   user: JwtPayload
@@ -37,7 +38,7 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request) // 从请求头中提取token
     console.log('token: ', token)
     if (!token) {
-      throw new HttpException('请先登录后再操作', HttpStatus.UNAUTHORIZED)
+      throw new HttpException(ResponseMessageEnum.PLEASE_LOGIN_FIRST, HttpStatus.UNAUTHORIZED)
     }
     try {
       const payload = await this.jwtService.verifyAsync<JwtPayload>(token, {
@@ -45,7 +46,7 @@ export class JwtAuthGuard implements CanActivate {
       })
       request.user = payload // 将解析后的用户信息存储在请求对象中
     } catch {
-      throw new HttpException('您的登陆状态有误，请重新登录', HttpStatus.UNAUTHORIZED)
+      throw new HttpException(ResponseMessageEnum.LOGIN_STATUS_INVALID, HttpStatus.UNAUTHORIZED)
     }
 
     return true

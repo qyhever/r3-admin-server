@@ -9,6 +9,7 @@ import { UserService } from '@/user/user.service'
 import { LoginDto } from './dto/login.dto'
 import { JwtPayload } from './auth.interface'
 import { ConfigEnum } from '@/enum/config.const'
+import { ResponseMessageEnum } from '@/enum/response-message.enum'
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
     if (!user) {
       return {
         error: true,
-        message: '手机号不正确',
+        message: ResponseMessageEnum.PHONE_NUMBER_INCORRECT,
       }
     }
 
@@ -41,14 +42,14 @@ export class AuthService {
     if (!isRight) {
       return {
         error: true,
-        message: '密码错误',
+        message: ResponseMessageEnum.PASSWORD_ERROR,
       }
     }
 
     if (!user.isEnabled) {
       return {
         error: true,
-        message: '用户已禁用',
+        message: ResponseMessageEnum.USER_DISABLED,
       }
     }
 
@@ -68,16 +69,16 @@ export class AuthService {
         },
       })
       if (!user) {
-        throw new UnauthorizedException('用户不存在')
+        throw new UnauthorizedException(ResponseMessageEnum.USER_NOT_FOUND)
       }
       if (!user.isEnabled) {
-        throw new UnauthorizedException('用户已禁用')
+        throw new UnauthorizedException(ResponseMessageEnum.USER_DISABLED)
       }
 
       return this.buildToken(user)
     } catch (error: unknown) {
       console.log('error: ', error)
-      throw new UnauthorizedException('无效的刷新令牌')
+      throw new UnauthorizedException(ResponseMessageEnum.INVALID_REFRESH_TOKEN)
     }
   }
 

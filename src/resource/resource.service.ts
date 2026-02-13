@@ -6,6 +6,7 @@ import { CreateResourceDto } from './dto/create-resource.dto'
 import { UpdateResourceDto } from './dto/update-resource.dto'
 import { ResourceFindListDto } from './dto/find-list.dto'
 import { FindAllDto } from './dto/find-all.dto'
+import { ResponseMessageEnum } from '@/enum/response-message.enum'
 
 @Injectable()
 export class ResourceService {
@@ -22,7 +23,7 @@ export class ResourceService {
       // throw new HttpException('权限码已存在', HttpStatus.BAD_REQUEST)
       return {
         error: true,
-        message: 'code编码已存在',
+        message: ResponseMessageEnum.CODE_ALREADY_EXISTS,
       }
     }
     const newDoc = new Resource()
@@ -83,14 +84,14 @@ export class ResourceService {
       // throw new HttpException(`未找到资源`, HttpStatus.NOT_FOUND)
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
 
     if (resource.isSystemDefault) {
       return {
         error: true,
-        message: '系统内置资源不能修改',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
 
@@ -99,7 +100,7 @@ export class ResourceService {
       if (existingSameCodeDoc) {
         return {
           error: true,
-          message: 'code编码已存在',
+          message: ResponseMessageEnum.CODE_ALREADY_EXISTS,
         }
       }
     }
@@ -200,7 +201,7 @@ export class ResourceService {
       // throw new HttpException(`未找到资源`, HttpStatus.NOT_FOUND)
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
     return doc
@@ -217,13 +218,13 @@ export class ResourceService {
     if (!doc) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
     if (doc.isSystemDefault) {
       return {
         error: true,
-        message: '系统内置资源不能删除',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
     // 删除中间表中的关联关系
@@ -420,7 +421,13 @@ export class ResourceService {
     if (!resource) {
       return {
         error: true,
-        message: 'Resource not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
+      }
+    }
+    if (resource.isSystemDefault) {
+      return {
+        error: true,
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
     resource.isEnabled = !resource.isEnabled

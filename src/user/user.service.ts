@@ -10,6 +10,7 @@ import { UserFindListDto } from './dto/find-list.dto'
 import { UserRole } from '../common/user-role.entity'
 import { Util } from '@/utils'
 import { ResourceService } from '@/resource/resource.service'
+import { ResponseMessageEnum } from '@/enum/response-message.enum'
 
 @Injectable()
 export class UserService {
@@ -30,7 +31,7 @@ export class UserService {
       if (doc) {
         return {
           error: true,
-          message: '用户名已存在',
+          message: ResponseMessageEnum.USERNAME_ALREADY_EXISTS,
         }
       }
       doc = await this.userRepository.findOne({
@@ -39,7 +40,7 @@ export class UserService {
       if (doc) {
         return {
           error: true,
-          message: '手机号已存在',
+          message: ResponseMessageEnum.PHONE_NUMBER_ALREADY_EXISTS,
         }
       }
       const newUser = new User()
@@ -91,14 +92,14 @@ export class UserService {
       if (!existingUser) {
         return {
           error: true,
-          message: 'Doc not found',
+          message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
         }
       }
 
       if (existingUser.isSystemDefault) {
         return {
           error: true,
-          message: '系统内置资源不能修改',
+          message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
         }
       }
       // 2. 如果提供了新用户名，检查是否与其他用户冲突
@@ -109,7 +110,7 @@ export class UserService {
         if (userWithSameName && userWithSameName.id !== id) {
           return {
             error: true,
-            message: '用户名已存在',
+            message: ResponseMessageEnum.USERNAME_ALREADY_EXISTS,
           }
         }
         existingUser.username = username
@@ -121,7 +122,7 @@ export class UserService {
         if (userWithSameMobile && userWithSameMobile.id !== id) {
           return {
             error: true,
-            message: '手机号已存在',
+            message: ResponseMessageEnum.PHONE_NUMBER_ALREADY_EXISTS,
           }
         }
         existingUser.mobile = mobile
@@ -166,7 +167,7 @@ export class UserService {
       console.log('update error', error)
       return {
         error: true,
-        message: '更新用户失败',
+        message: ResponseMessageEnum.UPDATE_USER_FAILED,
         details: error instanceof Error ? error.message : String(error),
       }
     }
@@ -258,7 +259,7 @@ export class UserService {
     if (!user) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
 
@@ -334,13 +335,13 @@ export class UserService {
     if (!doc) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
     if (doc.isSystemDefault) {
       return {
         error: true,
-        message: '系统内置资源不能删除',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
 
@@ -363,14 +364,14 @@ export class UserService {
     if (!docs || docs.length === 0) {
       return {
         error: true,
-        message: 'No users found with the provided IDs',
+        message: ResponseMessageEnum.NO_RESOURCES_FOUND,
       }
     }
     const systemDefaultUsers = docs.filter((doc) => doc.isSystemDefault)
     if (systemDefaultUsers.length > 0) {
       return {
         error: true,
-        message: 'Cannot delete system default users',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
         systemDefaultUsers: systemDefaultUsers.map((user) => user.username),
       }
     }
@@ -391,6 +392,7 @@ export class UserService {
       return {
         ...user,
         isDeleted: true,
+        isSystemDefault: false,
       }
     })
     await this.userRepository.save(updatedUsers)
@@ -409,7 +411,7 @@ export class UserService {
     if (!user) {
       return {
         error: true,
-        message: 'User not found',
+        message: ResponseMessageEnum.USER_NOT_FOUND,
       }
     }
     user.isEnabled = !user.isEnabled

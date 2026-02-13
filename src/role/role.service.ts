@@ -7,6 +7,7 @@ import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
 import { RoleFindListDto } from './dto/find-list.dto'
 import { RoleResource } from '@/common/role-resource.entity'
+import { ResponseMessageEnum } from '@/enum/response-message.enum'
 
 @Injectable()
 export class RoleService {
@@ -29,7 +30,7 @@ export class RoleService {
     if (existingRole) {
       return {
         error: true,
-        message: 'code编码已存在',
+        message: ResponseMessageEnum.CODE_ALREADY_EXISTS,
       }
     }
 
@@ -80,14 +81,14 @@ export class RoleService {
     if (!existingRole) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
 
     if (existingRole.isSystemDefault) {
       return {
         error: true,
-        message: '系统内置资源不能修改',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
     if (code) {
@@ -96,7 +97,7 @@ export class RoleService {
       if (existingSameCodeRole) {
         return {
           error: true,
-          message: 'code编码已存在',
+          message: ResponseMessageEnum.CODE_ALREADY_EXISTS,
         }
       }
     }
@@ -106,7 +107,7 @@ export class RoleService {
       if (existingSameNameRole) {
         return {
           error: true,
-          message: '角色名已存在',
+          message: ResponseMessageEnum.ROLE_NAME_ALREADY_EXISTS,
         }
       }
     }
@@ -179,25 +180,6 @@ export class RoleService {
       queryBuilder.andWhere('role.createdAt BETWEEN :start AND :end', { start, end })
     }
 
-    // 选择特定字段，排除不需要的字段
-    // queryBuilder.select([
-    //   // 'role.id',
-    //   // 'role.code',
-    //   // 'role.name',
-    //   // 'role.description',
-    //   // 'role.isEnabled',
-    //   // 'role.createdAt',
-    //   // 'role.updatedAt',
-    //   'role',
-    //   'roleResource',
-    //   'resource.id',
-    //   'resource.code',
-    //   'resource.name',
-    //   'resource.type',
-    //   'resource.parentCode',
-    //   'resource.isEnabled',
-    // ])
-
     if (dto.sortField && dto.sortValue) {
       // 使用传入的排序字段和排序方式
       queryBuilder.orderBy(`role.${dto.sortField}`, dto.sortValue === 'asc' ? 'ASC' : 'DESC')
@@ -264,7 +246,7 @@ export class RoleService {
     if (!role) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
 
@@ -296,13 +278,13 @@ export class RoleService {
     if (!doc) {
       return {
         error: true,
-        message: 'Doc not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
     if (doc.isSystemDefault) {
       return {
         error: true,
-        message: '系统内置资源不能删除',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
     // 硬删除关联关系
@@ -328,14 +310,14 @@ export class RoleService {
     if (!roles.length) {
       return {
         error: true,
-        message: 'No roles found with the provided IDs',
+        message: ResponseMessageEnum.NO_RESOURCES_FOUND,
       }
     }
 
     if (roles.some((role) => role.isSystemDefault)) {
       return {
         error: true,
-        message: 'Some roles are system defaults and cannot be deleted',
+        message: ResponseMessageEnum.SYSTEM_RESOURCE_OPERATE,
       }
     }
 
@@ -373,7 +355,7 @@ export class RoleService {
     if (!role) {
       return {
         error: true,
-        message: 'Role not found',
+        message: ResponseMessageEnum.RESOURCE_NOT_FOUND,
       }
     }
     role.isEnabled = !role.isEnabled
