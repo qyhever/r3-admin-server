@@ -3,10 +3,12 @@ import { ApiOperation, ApiParam, ApiBody, ApiOkResponse, ApiTags } from '@nestjs
 import { UserService } from './user.service' // 导入用户服务
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UserFindListDto } from './dto/find-list.dto'
 import { User } from './user.entity'
 import { Request } from 'express'
 import { JwtPayload } from '@/auth/auth.interface'
+import { Public } from '@/auth/decorators/public.decorator'
 
 class FindListVo {
   success: true
@@ -102,6 +104,18 @@ export class UserController {
   @Post('/batchDelete')
   deleteRows(@Body() ids: number[]) {
     return this.userService.deleteDocs(ids)
+  }
+
+  /**
+   * 更改密码
+   * - 路由：POST /user/updatePassword
+   */
+  @Public()
+  @ApiOperation({ summary: '更改密码' })
+  @ApiBody({ type: UpdatePasswordDto })
+  @Post('/updatePassword')
+  updatePassword(@Body() dto: UpdatePasswordDto) {
+    return this.userService.updatePassword(dto)
   }
 
   /**

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common' // 导入 Injectable 装饰器，用于标记服务类
 import { InjectRepository } from '@nestjs/typeorm' // 用于注入 TypeORM 仓库
 import { Repository, In } from 'typeorm' // 导入 TypeORM 的 Repository 类
+import { compareSync } from 'bcryptjs'
 // import * as dayjs from 'dayjs'
 import { User } from './user.entity' // 导入用户实体
 import { Role } from '@/role/role.entity' // 导入角色实体
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
+import { UpdatePasswordDto } from './dto/update-password.dto'
 import { UserFindListDto } from './dto/find-list.dto'
 import { UserRole } from '../common/user-role.entity'
 import { Util } from '@/utils'
@@ -415,6 +417,35 @@ export class UserService {
       }
     }
     user.isEnabled = !user.isEnabled
+    await this.userRepository.save(user)
+    return null
+  }
+
+  async updatePassword(dto: UpdatePasswordDto) {
+    const { mobile, password, newPassword } = dto
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.mobile=:mobile', { mobile })
+      .andWhere('user.isDeleted = :isDeleted', { isDeleted: false })
+      .getOne()
+
+    if (!user) {
+      return {
+        error: true,
+        message: ResponseMessageEnum.USER_NOT_FOUND,
+      }
+    }
+
+    const isRight = compareSync(password, user.password)
+    if (!isRight) {
+      return {
+        error: true,
+        message: ResponseMessageEnum.PASSWORD_ERROR,
+      }
+    }
+
+    user.password = await Util.genHashPassword(newPassword)
     await this.userRepository.save(user)
     return null
   }
